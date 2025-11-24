@@ -1,0 +1,316 @@
+<?php // -*-mode: PHP; coding:utf-8;-*-
+declare(strict_types=1);
+namespace MRBS;
+
+use IntlDateFormatter;
+
+require_once 'lib/autoload.inc';
+
+/**************************************************************************
+ *   MRBS Configuration File
+ *   Configure this file for your site.
+ *   You shouldn't have to modify anything outside this file.
+ *
+ *   This file has already been populated with the minimum set of configuration
+ *   variables that you will need to change to get your system up and running.
+ *   If you want to change any of the other settings in systemdefaults.inc.php
+ *   or areadefaults.inc.php, then copy the relevant lines into this file
+ *   and edit them here.   This file will override the default settings and
+ *   when you upgrade to a new version of MRBS the config file is preserved.
+ *
+ *   NOTE: if you include or require other files from this file, for example
+ *   to store your database details in a separate location, then you should
+ *   use an absolute and not a relative pathname.
+ **************************************************************************/
+
+/**********
+ * Timezone
+ **********/
+
+// The timezone your meeting rooms run in. It is especially important
+// to set this if you're using PHP 5 on Linux. In this configuration
+// if you don't, meetings in a different DST than you are currently
+// in are offset by the DST offset incorrectly.
+//
+// Note that timezones can be set on a per-area basis, so strictly speaking this
+// setting should be in areadefaults.inc.php, but as it is so important to set
+// the right timezone it is included here.
+//
+// When upgrading an existing installation, this should be set to the
+// timezone the web server runs in.  See the INSTALL document for more information.
+//
+// A list of valid timezones can be found at http://php.net/manual/timezones.php
+// The following line must be uncommented by removing the '//' at the beginning
+$timezone = "Europe/Berlin";
+
+
+/*******************
+ * Database settings
+ ******************/
+
+// If you are using cPanel on your web server, make sure you include the prefix,
+// typically 8 characters followed by an underscore, in your database name and
+// database username.  For example $db_database = "abcdefgh_mrbs". (Note: this
+// prefix is not the same as the table prefix below.)
+
+// Which database system: "pgsql"=PostgreSQL, "mysql"=MySQL
+$dbsys = "mysql";
+// Hostname of database server. For pgsql, can use "" instead of localhost
+// to use Unix Domain Sockets instead of TCP/IP. For mysql "localhost"
+// tells the system to use Unix Domain Sockets, and $db_port will be ignored;
+// if you want to force TCP connection you can use "127.0.0.1".
+$db_host = "localhost";
+// If you need to use a non standard port for the database connection you
+// can uncomment the following line and specify the port number
+//$db_port =1234;
+// Database name:
+$db_database = "c0mrbs";
+// Schema name.  This only applies to PostgreSQL and is only necessary if you have more
+// than one schema in your database and also you are using the same MRBS table names in
+// multiple schemas.
+//$db_schema = "public";
+// Database login user name:
+$db_login = "c0mrbs";
+// Database login password:
+$db_password = 'c@oZD9piTLo';
+// Prefix for table names.  This will allow multiple installations where only
+// one database is available
+$db_tbl_prefix = "mrbs_";
+// Set $db_persist to TRUE to use PHP persistent (pooled) database connections.  Note
+// that persistent connections are not recommended unless your system suffers significant
+// performance problems without them.   They can cause problems with transactions and
+// locks (see http://php.net/manual/en/features.persistent-connections.php) and although
+// MRBS tries to avoid those problems, it is generally better not to use persistent
+// connections if you can.
+$db_persist = false;
+
+
+/* Add lines from systemdefaults.inc.php and areadefaults.inc.php below here
+   to change the default configuration. Do _NOT_ modify systemdefaults.inc.php
+   or areadefaults.inc.php.  */
+   
+/*********************************
+ * Site identification information
+ *********************************/
+
+// Set to true to enable multisite operation, in which case the settings below are for the
+// home site, identified by the empty string ''.   Other sites have their own supplementary
+// config fies in the sites/<sitename> directory.
+$multisite = false;
+$default_site = '';
+
+$mrbs_admin = "Your Administrator";
+$mrbs_admin_email = "jens.von_einsiedel@fli.de";
+// NOTE:  there are more email addresses in $mail_settings below.    You can also give
+// email addresses in the format 'Full Name <address>', for example:
+// $mrbs_admin_email = 'Booking System <admin_email@your.org>';
+// if the name section has any "peculiar" characters in it, you will need
+// to put the name in double quotes, e.g.:
+// $mrbs_admin_email = '"Bloggs, Joe" <admin_email@your.org>';
+
+// The company name is mandatory.   It is used in the header and also for email notifications.
+// The company logo, additional information and URL are all optional.
+
+$mrbs_company = "FLI";   // This line must always be uncommented ($mrbs_company is used in various places)
+
+// Uncomment this next line to use a logo instead of text for your organisation in the header
+$mrbs_company_logo = "/images/logo.jpg";    // name of your logo file.   This example assumes it is in the MRBS directory
+
+// Uncomment this next line for supplementary information after your company name or logo.
+// This can contain HTML, for example if you want to include a link.
+//$mrbs_company_more_info = "You can put additional information here";  // e.g. "XYZ Department"
+
+// Uncomment this next line to have a link to your organisation in the header
+// $mrbs_company_url = "https://www.fli.de/";
+
+// This is to fix URL problems when using a proxy in the environment.
+// If links inside MRBS or in email notifications appear broken, then specify here the URL of
+// your MRBS root directory, as seen by the users. For example:
+$url_base =  "http://mrbs.intranet.fli.de/";
+
+
+/*******************
+ * Themes
+ *******************/
+
+// Choose a theme for the MRBS.   The theme controls two aspects of the look and feel:
+//   (a) the styling:  the most commonly changed colours, dimensions and fonts have been
+//       extracted from the main CSS file and put into the styling.inc file in the appropriate
+//       directory in the Themes directory.   If you want to change the colour scheme, you should
+//       be able to do it by changing the values in the theme file.    More advanced styling changes
+//       can be made by changing the rules in the CSS file.
+//   (b) the header:  the header.inc file which contains the function used for producing the header.
+//       This enables organisations to plug in their own header functions quite easily, in cases where
+//       the desired corporate look and feel cannot be changed using the CSS alone and the mark-up
+//       itself needs to be changed.
+//
+//  MRBS will look for the files "styling.inc" and "header.inc" in the directory Themes/$theme and
+//  if it can't find them will use the files in Themes/default.    A theme directory can contain
+//  a replacement styling.inc file or a replacement header.inc file or both.
+
+// Available options are:
+
+// "default"        Default MRBS theme
+// "classic126"     Same colour scheme as MRBS 1.2.6
+
+$theme = "default";
+
+// Use the $custom_css_url to override the standard MRBS CSS.
+$custom_css_url = 'css/custom.css';
+
+// Use the $custom_js_url to add your own JavaScript.
+//$custom_js_url = 'js/custom.js';
+
+/******************
+ * Display settings
+ ******************/
+
+// [These are all variables that control the appearance of pages and could in time
+//  become per-user settings]
+
+// Start of week: 0 for Sunday, 1 for Monday, etc.
+$weekstarts = 1;
+
+// Days of the week that are weekdays
+$weekdays = array(1, 2, 3, 4, 5);
+
+// Set this to true to add styling to weekend days
+$style_weekends = true;
+
+// To show week numbers in the main calendar, set this to true. The week
+// numbers are only displayed if you set $weekstarts to start on the first
+// day of the week in your locale and area's timezone.  (This assumes that
+// the PHP IntlCalendar class is available; if not, the week is assumed to
+// start on Mondays, ie the ISO stanard.)
+$view_week_number = true;
+
+// Um ​​die Wochennummern in den Minikalendern anzuzeigen, setzen Sie diesen Wert auf „true“. Die Wochenzahlen werden nur angezeigt, wenn Sie $weekstarts auf den Wochenanfang setzen.
+// Siehe den Kommentar zum Wochenbeginn oben.
+$mincals_week_numbers = true;
+
+/**********************************************
+ * Email settings
+ **********************************************/
+
+// BASIC SETTINGS
+// --------------
+
+// Set the email address of the From field. Default is 'admin_email@your.org'
+$mail_settings['from'] = 'no-reply@fli.de';
+
+// By default MRBS will send some emails (eg booking approval emails) as though they have come from
+// the user, rather than the From address above.   However some email servers will not allow this in
+// order to prevent email spoofing.   If this is the case then set this to true in order that the
+// From address above is used for all emails.
+$mail_settings['use_from_for_all_mail'] = false;
+
+// By default MRBS will set a Reply-To address and use current user's email address.  Set this to
+// false in order not to set a Reply-To address.
+$mail_settings['use_reply_to'] = true;
+
+// The address to be used for the ORGANIZER in an iCalendar event.   Do not make
+// this email address the same as the admin email address or the recipients
+// email address because on some mail systems, eg IBM Domino, the iCalendar email
+// notification is silently discarded if the organizer's email address is the same
+// as the recipient's.  On other systems you may get a "Meeting not found" message.
+$mail_settings['organizer'] = 'mrbs@fli.de';
+
+// Set the recipient email. Default is 'admin_email@your.org'. You can define
+// more than one recipient like this "john@doe.com,scott@tiger.com"
+$mail_settings['recipients'] = 'jens.von_einsiedel@fli.de';
+
+// Set email address of the Carbon Copy field. Default is ''. You can define
+// more than one recipient (see 'recipients')
+$mail_settings['cc'] = '';
+
+// Set to true if you want the cc addresses to be appended to the to line.
+// (Some email servers are configured not to send emails if the cc or bcc
+// fields are set)
+$mail_settings['treat_cc_as_to'] = false;
+
+
+// HOW TO EMAIL - LANGUAGE
+// -----------------------------------------
+
+// Set the language used for emails.  This should be in the form of a BCP 47
+// language tag, eg 'en-GB'.  MRBS will use the language tag to set the locale
+// for date and time formats, and find the best match in the lang.* files for
+// translations.  For example, setting the admin_lang to 'en' will give English
+// text and am/pm style times; setting it to 'en-GB' will give English text with
+// 24-hour times.
+$mail_settings['admin_lang'] = 'de';   // Default is 'en'.
+
+/*******************
+ * SMTP settings
+ */
+
+// These settings are only used with the "smtp" backend
+$smtp_settings['host'] = '172.24.7.11';  // SMTP server
+$smtp_settings['port'] = 25;           // SMTP port number
+$smtp_settings['auth'] = false;        // Whether to use SMTP authentication
+$smtp_settings['secure'] = '';         // Encryption method: '', 'tls' or 'ssl' - note that 'tls' means TLS is used even if the SMTP
+                                       // server doesn't advertise it. Conversely if you specify '' and the server advertises TLS, TLS
+                                       // will be used, unless the 'disable_opportunistic_tls' configuration parameter shown below is
+                                       // set to true.
+$smtp_settings['username'] = '';       // Username (if using authentication)
+$smtp_settings['password'] = '';       // Password (if using authentication)
+
+// The hostname to use in the Message-ID header and as default HELO string.
+// If empty, PHPMailer attempts to find one with, in order,
+// $_SERVER['SERVER_NAME'], gethostname(), php_uname('n'), or the value
+// 'localhost.localdomain'.
+$smtp_settings['hostname'] = '';
+
+// The SMTP HELO/EHLO name used for the SMTP connection.
+// Default is $smtp_settings['hostname']. If $smtp_settings['hostname'] is empty, PHPMailer attempts to find
+// one with the same method described above for $smtp_settings['hostname'].
+$smtp_settings['helo'] = '';
+
+$smtp_settings['disable_opportunistic_tls'] = false; // Set this to true to disable
+                                                     // opportunistic TLS
+                                                     // https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting#opportunistic-tls
+// If you're having problems with sending email to a TLS-enabled SMTP server *which you trust* you can change the following
+// settings, which reduce TLS security.
+// See https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting#php-56-certificate-verification-failure
+$smtp_settings['ssl_verify_peer'] = true;
+$smtp_settings['ssl_verify_peer_name'] = true;
+$smtp_settings['ssl_allow_self_signed'] = false;
+
+/**********
+ * Language
+ **********/
+
+// Set this to true to disable the automatic language changing MRBS performs
+// based on the user's browser language settings. It will ensure that
+// the language displayed is always the value of $default_language_tokens,
+// as specified below
+$disable_automatic_language_changing = false;
+
+// Set this to a different language specifier to default to different
+// language tokens. This must equate to a lang.* file in MRBS.
+// e.g. use "fr" to use the translations in "lang.fr" as the default
+// translations.  [NOTE: it is only necessary to change this if you
+// have disabled automatic language changing above]
+$default_language_tokens = "de";
+
+// Set this to a valid locale that is supported on the OS you run the
+// MRBS server on if you want to override the automatic locale determination
+// MRBS performs.  The locale should be in the form of a BCP 47 language
+// tag, eg 'en-GB', or 'sr-Latn-RS'.   Note that MRBS will convert this into
+// a format suitable for your OS, eg by adding '.utf-8' or changing it to 'eng'.
+$override_locale = "";
+
+// FAQ file language selection. If not set, use the default English file.
+// If your language faq file is available, set $faqfilelang to match the
+// end of the file name, excluding the underscore (eg for site_faq_fr.html
+// use "fr").  For compatibility with older versions of MRBS settings with
+// the underscore, eg "_fr" are supported, but deprecated.
+$faqfilelang = "";
+
+// Language selection when run from the command line
+$cli_language = "de";
+
+// Set to true to get debug information on languages and locales written to the
+// error log.
+$language_debug = false;
+
